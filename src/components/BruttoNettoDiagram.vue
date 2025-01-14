@@ -5,7 +5,7 @@
         @mouseleave="tooltipVisible = false"
         @mousemove="onMousemove"
     ></svg>
-    <div class="data-tooltip" v-if="true" :style="styleObject">
+    <div class="data-tooltip" v-if="tooltipVisible" :style="styleObject">
         <table>
             <tbody>
                 <tr>
@@ -14,15 +14,15 @@
                 </tr>
                 <template v-for="input in inputs">
                     <tr v-if="input.fn(monthly ? currentX * 12 : currentX) != 0">
-                        <td style="text-align: right">{{ input.legende }}:</td>
+                        <td>{{ input.legende }}:</td>
                         <td>
-                            {{ input.type == Type.SUBSTRACT ? "-" : ""
+                            {{ input.type == Type.SUBSTRACT ? "-" : "+"
                             }}{{ Math.round(monthly ? input.fn(currentX * 12) / 12 : input.fn(currentX)) }}&nbsp;€
                         </td>
                     </tr>
                 </template>
 
-                <tr class="summary-row">
+                <tr>
                     <td>Nettoeinkommen:</td>
                     <td>{{ Math.round(calculateNetto(currentX)) }}&nbsp;€</td>
                 </tr>
@@ -152,11 +152,15 @@ function onMousemove(e: MouseEvent) {
     tooltipTop.value = e.clientY + 10;
     tooltipLeft.value = e.clientX + 10;
     const svgLeft = svgRef.value?.getBoundingClientRect().left || 0;
+    const svgTop = svgRef.value?.getBoundingClientRect().top || 0;
     const x = e.clientX - svgLeft - 50;
-    if (x > 0) {
+    const y = e.clientY - svgTop - 50;
+    if (x > 0 && x < width && y > 0 && y < height) {
+        tooltipVisible.value = true;
         currentX.value = xScale.invert(x);
     } else {
         currentX.value = 0;
+        tooltipVisible.value = false;
     }
 }
 </script>
@@ -165,13 +169,26 @@ function onMousemove(e: MouseEvent) {
 .data-tooltip {
     background-color: white;
     border: 1px solid gray;
+    text-align: right;
 }
 
-.data-tooltip .summary-row {
+.data-tooltip table {
     border-collapse: collapse;
 }
 
-.data-tooltip .summary-row td {
+.data-tooltip td {
+    padding: 0 4px;
+}
+
+.data-tooltip td:first-child {
+    padding-right: 0.5em;
+}
+
+.data-tooltip tr:first-child td {
+    border-bottom: 1px solid black;
+}
+
+.data-tooltip tr:last-child td {
     border-top: 5px double black;
 }
 </style>

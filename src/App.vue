@@ -1,5 +1,11 @@
 <template>
     <Diagram :inputs="inputs" />
+    <div class="footer">
+        <hr />
+        <a href="https://github.com/Flugtiger/brutto-netto-diagramm" target="_blank">
+            <img width="20px" src="/github-mark.svg" />
+        </a>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -13,4 +19,8 @@ import { Rente } from "./components/rente";
 const inputs = [Bürgergeld, Einkommensteuer, Rente, Krankenversicherung, Arbeitslosenversicherung];
 </script>
 
-<style scoped></style>
+<style scoped>
+.footer {
+    margin-top: 3em;
+}
+</style>
