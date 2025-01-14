@@ -46,5 +46,6 @@ jobs:
           aws-region: eu-central-1
           role-to-assume: ${{ secrets.AWS_ROLE }}
       - name: Copy dist folder to s3
-        run: |
-          aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/
+        run: aws s3 sync ./dist s3://${{ secrets.S3_BUCKET_NAME }}/
+      - name: Invalidate CloudFront Caches
+        run: aws cloudfront create-invalidation --distribution-id E22KUDHMQM9MKR --paths "/*"

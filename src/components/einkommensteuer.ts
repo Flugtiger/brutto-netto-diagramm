@@ -1,17 +1,26 @@
+import { Arbeitslosenversicherung } from "./arbeitslosenversicherung";
+import { Krankenversicherung } from "./krankenversicherung";
+import { Rente } from "./rente";
 import { Type, type DiagramInput } from "./types";
 
 export const Einkommensteuer: DiagramInput = {
     legende: "Einkommensteuer",
     type: Type.SUBSTRACT,
-    fn(brutto_einkommen: number): number {
+    fn(bruttoJahr: number): number {
         // Werte von 2025 (§32a EstG):
         const webungskosten_pausch = 1230;
         const grundfreibetrag = 12096;
-        const eckpunkt1 = 17447;
-        const eckpunkt2 = 68496;
-        const eckpunkt3 = 285048;
+        const eckpunkt1 = 17443;
+        const eckpunkt2 = 68480;
+        const eckpunkt3 = 277825;
 
-        const versteuerndes_einkommen = Math.max(brutto_einkommen - webungskosten_pausch, 0);
+        const rente = Rente.fn(bruttoJahr);
+        const kv = Krankenversicherung.fn(bruttoJahr);
+        const av = Arbeitslosenversicherung.fn(bruttoJahr);
+
+        const sonderausgaben = rente + kv + av;
+
+        const versteuerndes_einkommen = Math.max(bruttoJahr - webungskosten_pausch - sonderausgaben, 0);
 
         const tarif1_basis = Math.min(
             Math.max(versteuerndes_einkommen - grundfreibetrag, 0),

@@ -5,16 +5,26 @@
         @mouseleave="tooltipVisible = false"
         @mousemove="onMousemove"
     ></svg>
-    <div class="data-tooltip" v-if="tooltipVisible" :style="styleObject">
+    <div class="data-tooltip" v-if="true" :style="styleObject">
         <table>
             <tbody>
                 <tr>
                     <td>Bruttoeinkommen:</td>
                     <td>{{ Math.round(currentX) }}&nbsp;€</td>
                 </tr>
-                <tr v-for="input in inputs">
-                    <td>{{ input.legende }}:</td>
-                    <td>{{ input.type == Type.SUBSTRACT ? "-" : "" }}{{ Math.round(input.fn(currentX)) }}&nbsp;€</td>
+                <template v-for="input in inputs">
+                    <tr v-if="input.fn(monthly ? currentX * 12 : currentX) != 0">
+                        <td style="text-align: right">{{ input.legende }}:</td>
+                        <td>
+                            {{ input.type == Type.SUBSTRACT ? "-" : ""
+                            }}{{ Math.round(monthly ? input.fn(currentX * 12) / 12 : input.fn(currentX)) }}&nbsp;€
+                        </td>
+                    </tr>
+                </template>
+
+                <tr class="summary-row">
+                    <td>Nettoeinkommen:</td>
+                    <td>{{ Math.round(calculateNetto(currentX)) }}&nbsp;€</td>
                 </tr>
             </tbody>
         </table>
@@ -38,7 +48,8 @@ const currentX = ref(0);
 
 const width = 800;
 const height = 500;
-const domainEnd = 25000;
+const monthly = true;
+const domainEnd = monthly ? 25000 / 12 : 25000;
 
 const xScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([0, width]);
 const yScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([height, 0]);
@@ -46,6 +57,25 @@ const yScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([height, 0]);
 interface DataPoint {
     brutto: number;
     netto: number;
+}
+
+function calculateNetto(brutto: number) {
+    if (monthly) {
+        brutto *= 12;
+    }
+    let netto = brutto;
+    for (const input of props.inputs) {
+        let inputValue = input.fn(brutto);
+        if (input.type == Type.ADD) {
+            netto += inputValue;
+        } else {
+            netto -= inputValue;
+        }
+    }
+    if (monthly) {
+        netto /= 12;
+    }
+    return netto;
 }
 
 onMounted(() => {
@@ -63,7 +93,7 @@ onMounted(() => {
         .attr("x", width)
         .attr("dy", "-0.5em")
         .attr("text-anchor", "end")
-        .text("Brutto (€)");
+        .text("Brutto " + (monthly ? "Monat" : "Jahr") + " (€)");
 
     g.append("g")
         .call(d3.axisLeft(yScale))
@@ -73,20 +103,12 @@ onMounted(() => {
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
-        .text("Netto (€)");
+        .text("Netto " + (monthly ? "Monat" : "Jahr") + " (€)");
 
     const data: DataPoint[] = [];
     for (let x = 0; x <= width; x++) {
         const brutto = xScale.invert(x);
-        let netto = brutto;
-        for (const input of props.inputs) {
-            const inputValue = input.fn(brutto);
-            if (input.type == Type.ADD) {
-                netto += inputValue;
-            } else {
-                netto -= inputValue;
-            }
-        }
+        const netto = calculateNetto(brutto);
         data.push({
             brutto,
             netto,
@@ -143,5 +165,13 @@ function onMousemove(e: MouseEvent) {
 .data-tooltip {
     background-color: white;
     border: 1px solid gray;
+}
+
+.data-tooltip .summary-row {
+    border-collapse: collapse;
+}
+
+.data-tooltip .summary-row td {
+    border-top: 5px double black;
 }
 </style>

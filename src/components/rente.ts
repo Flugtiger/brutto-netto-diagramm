@@ -2,13 +2,15 @@ import { Geringfügigkeitsgrenze } from "./grundlage";
 import { beitragspflichtigeEinnahmeArbeitnehmer } from "./sozialversicherung";
 import { Type, type DiagramInput } from "./types";
 
+// Werte für 2025:
+export const Beitragsbemessungsgrenze = 8050 * 12; // SVReGV 2025
+
 export const Rente: DiagramInput = {
     legende: "Rentenbeitrag",
     type: Type.SUBSTRACT,
     fn(bruttoJahr: number): number {
         // Werte für 2025:
         const beitragsSatz = 18.6;
-        const beitragsbemessungsgrenzeMonat = 8050; // SVReGV 2025
 
         const bruttoMonat = bruttoJahr / 12;
         if (bruttoMonat < Geringfügigkeitsgrenze) {
@@ -18,8 +20,7 @@ export const Rente: DiagramInput = {
             return beitragMonat * 12;
         }
         const beitragspflichtigeEinnahmeJahr = beitragspflichtigeEinnahmeArbeitnehmer(bruttoJahr);
-        const beitragJahr =
-            (Math.min(beitragspflichtigeEinnahmeJahr, beitragsbemessungsgrenzeMonat * 12) * beitragsSatz) / 100;
+        const beitragJahr = (Math.min(beitragspflichtigeEinnahmeJahr, Beitragsbemessungsgrenze) * beitragsSatz) / 100;
         const beitragArbeitnehmerJahr = beitragJahr / 2; // § 168 SGB VI
         return beitragArbeitnehmerJahr;
     },
