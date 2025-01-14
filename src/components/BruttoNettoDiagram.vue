@@ -43,6 +43,11 @@ const domainEnd = 25000;
 const xScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([0, width]);
 const yScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([height, 0]);
 
+interface DataPoint {
+    brutto: number;
+    netto: number;
+}
+
 onMounted(() => {
     const svg = d3
         .select("svg")
@@ -70,7 +75,7 @@ onMounted(() => {
         .attr("text-anchor", "end")
         .text("Netto (€)");
 
-    const data = [];
+    const data: DataPoint[] = [];
     for (let x = 0; x <= width; x++) {
         const brutto = xScale.invert(x);
         let netto = brutto;
@@ -89,7 +94,7 @@ onMounted(() => {
     }
 
     const line = d3
-        .line()
+        .line<DataPoint>()
         .x(function (d) {
             return xScale(d.brutto);
         })
