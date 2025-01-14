@@ -21,6 +21,6 @@ const inputs = [Bürgergeld, Einkommensteuer, Rente, Krankenversicherung, Arbeit
 
 <style scoped>
 .footer {
-    margin-top: 3em;
+    margin-top: 2em;
 }
 </style>

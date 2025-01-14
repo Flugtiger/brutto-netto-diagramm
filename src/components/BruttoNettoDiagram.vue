@@ -1,33 +1,35 @@
 <template>
-    <svg
-        ref="svgRef"
-        @mouseenter="tooltipVisible = true"
-        @mouseleave="tooltipVisible = false"
-        @mousemove="onMousemove"
-    ></svg>
-    <div class="data-tooltip" v-if="tooltipVisible" :style="styleObject">
-        <table>
-            <tbody>
-                <tr>
-                    <td>Bruttoeinkommen:</td>
-                    <td>{{ Math.round(currentX) }}&nbsp;€</td>
-                </tr>
-                <template v-for="input in inputs">
-                    <tr v-if="input.fn(monthly ? currentX * 12 : currentX) != 0">
-                        <td>{{ input.legende }}:</td>
-                        <td>
-                            {{ input.type == Type.SUBSTRACT ? "-" : "+"
-                            }}{{ Math.round(monthly ? input.fn(currentX * 12) / 12 : input.fn(currentX)) }}&nbsp;€
-                        </td>
+    <div ref="containerRef" style="position: relative">
+        <svg
+            ref="svgRef"
+            @mouseenter="tooltipVisible = true"
+            @mouseleave="tooltipVisible = false"
+            @mousemove="onMousemove"
+        ></svg>
+        <div class="data-tooltip" v-if="tooltipVisible" :style="styleObject">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Bruttoeinkommen:</td>
+                        <td>{{ Math.round(currentX) }}&nbsp;€</td>
                     </tr>
-                </template>
+                    <template v-for="input in inputs">
+                        <tr v-if="input.fn(monthly ? currentX * 12 : currentX) != 0">
+                            <td>{{ input.legende }}:</td>
+                            <td>
+                                {{ input.type == Type.SUBSTRACT ? "-" : "+"
+                                }}{{ Math.round(monthly ? input.fn(currentX * 12) / 12 : input.fn(currentX)) }}&nbsp;€
+                            </td>
+                        </tr>
+                    </template>
 
-                <tr>
-                    <td>Nettoeinkommen:</td>
-                    <td>{{ Math.round(calculateNetto(currentX)) }}&nbsp;€</td>
-                </tr>
-            </tbody>
-        </table>
+                    <tr>
+                        <td>Nettoeinkommen:</td>
+                        <td>{{ Math.round(calculateNetto(currentX)) }}&nbsp;€</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -40,6 +42,7 @@ const props = defineProps<{
     inputs: DiagramInput[];
 }>();
 
+const containerRef = useTemplateRef<HTMLDivElement>("containerRef");
 const svgRef = useTemplateRef<SVGElement>("svgRef");
 const tooltipVisible = ref(false);
 const tooltipTop = ref(40);
@@ -149,8 +152,8 @@ const styleObject = computed<StyleValue>(() => ({
 }));
 
 function onMousemove(e: MouseEvent) {
-    tooltipTop.value = e.clientY + 10;
-    tooltipLeft.value = e.clientX + 10;
+    tooltipTop.value = e.clientY - containerRef.value!.getBoundingClientRect().top + 20;
+    tooltipLeft.value = e.clientX - containerRef.value!.getBoundingClientRect().left + 20;
     const svgLeft = svgRef.value?.getBoundingClientRect().left || 0;
     const svgTop = svgRef.value?.getBoundingClientRect().top || 0;
     const x = e.clientX - svgLeft - 50;
