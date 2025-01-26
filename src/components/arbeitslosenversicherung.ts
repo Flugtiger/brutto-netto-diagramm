@@ -1,11 +1,11 @@
 import { Beitragsbemessungsgrenze } from "./rente";
 import { beitragspflichtigeEinnahmeArbeitnehmer } from "./sozialversicherung";
-import { Type, type DiagramInput } from "./types";
+import { type DiagramInput } from "./types";
 
 export const Arbeitslosenversicherung: DiagramInput = {
     legende: "Arbeitslosenversicherung",
-    type: Type.SUBSTRACT,
-    fn(bruttoJahr) {
+    subtract: true,
+    fn(bruttoJahr, _settings) {
         const beitragsSatz = 2.6;
 
         const einkommen = beitragspflichtigeEinnahmeArbeitnehmer(bruttoJahr);

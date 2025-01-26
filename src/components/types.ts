@@ -1,10 +1,9 @@
-export enum Type {
-    ADD = "ADD",
-    SUBSTRACT = "SUBSTRACT",
+export interface Settings {
+    kvErmäßigt: boolean;
 }
 
 export interface DiagramInput {
     legende: string;
-    type: Type;
-    fn: (bruttoJahr: number) => number;
+    subtract: boolean;
+    fn: (bruttoJahr: number, settings: Settings) => number;
 }

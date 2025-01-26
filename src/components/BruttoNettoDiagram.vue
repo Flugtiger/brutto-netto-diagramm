@@ -14,11 +14,15 @@
                         <td>{{ Math.round(currentX) }}&nbsp;€</td>
                     </tr>
                     <template v-for="input in inputs">
-                        <tr v-if="input.fn(monthly ? currentX * 12 : currentX) != 0">
+                        <tr v-if="input.fn(monthly ? currentX * 12 : currentX, settings) != 0">
                             <td>{{ input.legende }}:</td>
                             <td>
-                                {{ input.type == Type.SUBSTRACT ? "-" : "+"
-                                }}{{ Math.round(monthly ? input.fn(currentX * 12) / 12 : input.fn(currentX)) }}&nbsp;€
+                                {{ input.subtract ? "-" : "+"
+                                }}{{
+                                    Math.round(
+                                        monthly ? input.fn(currentX * 12, settings) / 12 : input.fn(currentX, settings),
+                                    )
+                                }}&nbsp;€
                             </td>
                         </tr>
                     </template>
@@ -36,10 +40,11 @@
 <script lang="ts" setup>
 import * as d3 from "d3";
 import { computed, onMounted, ref, useTemplateRef, type StyleValue } from "vue";
-import { Type, type DiagramInput } from "./types";
+import { type DiagramInput, type Settings } from "./types";
 
 const props = defineProps<{
     inputs: DiagramInput[];
+    settings: Settings;
 }>();
 
 const containerRef = useTemplateRef<HTMLDivElement>("containerRef");
@@ -68,11 +73,11 @@ function calculateNetto(brutto: number) {
     }
     let netto = brutto;
     for (const input of props.inputs) {
-        let inputValue = input.fn(brutto);
-        if (input.type == Type.ADD) {
-            netto += inputValue;
+        const value = input.fn(brutto, props.settings);
+        if (input.subtract) {
+            netto -= value;
         } else {
-            netto -= inputValue;
+            netto += value;
         }
     }
     if (monthly) {

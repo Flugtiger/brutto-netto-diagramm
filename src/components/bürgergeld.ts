@@ -1,6 +1,6 @@
 import { Einkommensteuer } from "./einkommensteuer";
 import { Rente } from "./rente";
-import { Type, type DiagramInput } from "./types";
+import { type DiagramInput } from "./types";
 
 function inRange(value: number, rangeStart: number, rangeEnd: number) {
     return Math.min(Math.max(value - rangeStart, 0), rangeEnd - rangeStart);
@@ -8,8 +8,8 @@ function inRange(value: number, rangeStart: number, rangeEnd: number) {
 
 export const Bürgergeld: DiagramInput = {
     legende: "Bürgergeld",
-    type: Type.ADD,
-    fn(brutto: number): number {
+    subtract: false,
+    fn(brutto: number, settings): number {
         const regelbedarf_stufe1 = 563; // Anhang zu §28 SGB XII
 
         // §11b SGB II
@@ -18,8 +18,8 @@ export const Bürgergeld: DiagramInput = {
         absetzbetrag += inRange(monatlichBrutto, 100, 520) * 0.2;
         absetzbetrag += inRange(monatlichBrutto, 520, 1000) * 0.3;
         absetzbetrag += inRange(monatlichBrutto, 1000, 1200) * 0.1;
-        absetzbetrag += Einkommensteuer.fn(brutto) / 12;
-        absetzbetrag += Rente.fn(brutto) / 12;
+        absetzbetrag += Einkommensteuer.fn(brutto, settings) / 12;
+        absetzbetrag += Rente.fn(brutto, settings) / 12;
 
         const bürgergeldMonatlich = regelbedarf_stufe1 - (monatlichBrutto - absetzbetrag);
         return Math.max(bürgergeldMonatlich * 12, 0);
