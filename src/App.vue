@@ -3,7 +3,7 @@
     <div class="footer">
         <hr />
         <a href="https://github.com/Flugtiger/brutto-netto-diagramm" target="_blank">
-            <img width="20px" src="/github-mark.svg" />
+            <GithubMark width="20" height="20" viewBox="0 0 98 96" />
         </a>
     </div>
 </template>
@@ -16,6 +16,7 @@ import { Einkommensteuer } from "./components/einkommensteuer";
 import { Krankenversicherung } from "./components/krankenversicherung";
 import { Pflegeversicherung } from "./components/pflegeversicherung";
 import { Rente } from "./components/rente";
+import GithubMark from "./github-mark.svg";
 
 const inputs = [Bürgergeld, Einkommensteuer, Rente, Krankenversicherung, Arbeitslosenversicherung, Pflegeversicherung];
 </script>
@@ -23,5 +24,15 @@ const inputs = [Bürgergeld, Einkommensteuer, Rente, Krankenversicherung, Arbeit
 <style scoped>
 .footer {
     margin-top: 2em;
+}
+
+.footer :deep(path) {
+    fill: lightgray;
+}
+
+@media (prefers-color-scheme: light) {
+    .footer :deep(path) {
+        fill: initial;
+    }
 }
 </style>

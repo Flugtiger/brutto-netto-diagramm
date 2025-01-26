@@ -97,7 +97,7 @@ onMounted(() => {
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScale))
         .append("text")
-        .attr("fill", "#000")
+        .attr("fill", "currentColor")
         .attr("x", width)
         .attr("dy", "-0.5em")
         .attr("text-anchor", "end")
@@ -106,7 +106,7 @@ onMounted(() => {
     g.append("g")
         .call(d3.axisLeft(yScale))
         .append("text")
-        .attr("fill", "#000")
+        .attr("fill", "currentColor")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", "0.71em")
@@ -175,9 +175,25 @@ function onMousemove(e: MouseEvent) {
 
 <style lang="css" scoped>
 .data-tooltip {
-    background-color: white;
-    border: 1px solid gray;
+    background-color: #242424;
+    border: 1px solid rgba(255, 255, 255, 0.87);
     text-align: right;
+}
+
+.data-tooltip td {
+    border-color: rgba(255, 255, 255, 0.87);
+}
+
+@media (prefers-color-scheme: light) {
+    .data-tooltip {
+        background-color: white;
+        border: 1px solid gray;
+        text-align: right;
+    }
+
+    .data-tooltip td {
+        border-color: #213547;
+    }
 }
 
 .data-tooltip table {
@@ -193,10 +209,10 @@ function onMousemove(e: MouseEvent) {
 }
 
 .data-tooltip tr:first-child td {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid;
 }
 
 .data-tooltip tr:last-child td {
-    border-top: 5px double black;
+    border-top: 5px double;
 }
 </style>
