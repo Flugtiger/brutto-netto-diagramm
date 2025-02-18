@@ -56,11 +56,19 @@ const currentX = ref(0);
 
 const width = 800;
 const height = 500;
+const paddingLeft = 40;
+const paddingBottom = 20;
 const monthly = true;
 const domainEnd = monthly ? 25000 / 12 : 25000;
 
-const xScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([0, width]);
-const yScale = d3.scaleLinear().domain([0, domainEnd]).rangeRound([height, 0]);
+const xScale = d3
+    .scaleLinear()
+    .domain([0, domainEnd])
+    .range([0, width - paddingLeft]);
+const yScale = d3
+    .scaleLinear()
+    .domain([0, domainEnd])
+    .range([height - paddingBottom, 0]);
 
 interface DataPoint {
     brutto: number;
@@ -87,18 +95,15 @@ function calculateNetto(brutto: number) {
 }
 
 onMounted(() => {
-    const svg = d3
-        .select("svg")
-        .attr("width", width + 100)
-        .attr("height", height + 100);
-    const g = svg.append("g").attr("transform", "translate(50,50)");
+    const svg = d3.select("svg").attr("width", width).attr("height", height);
+    const g = svg.append("g").attr("transform", "translate(" + paddingLeft + ",0)");
 
     g.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height - paddingBottom) + ")")
         .call(d3.axisBottom(xScale))
         .append("text")
         .attr("fill", "currentColor")
-        .attr("x", width)
+        .attr("x", width - paddingLeft)
         .attr("dy", "-0.5em")
         .attr("text-anchor", "end")
         .text("Brutto " + (monthly ? "Monat" : "Jahr") + " (€)");
@@ -114,9 +119,10 @@ onMounted(() => {
         .text("Netto " + (monthly ? "Monat" : "Jahr") + " (€)");
 
     const data: DataPoint[] = [];
-    for (let x = 0; x <= width; x++) {
+    for (let x = 0; x <= width; x += 1) {
         const brutto = xScale.invert(x);
         const netto = calculateNetto(brutto);
+        console.log(brutto + ": " + netto);
         data.push({
             brutto,
             netto,
@@ -125,6 +131,7 @@ onMounted(() => {
 
     const line = d3
         .line<DataPoint>()
+        //.curve(d3.curveNatural)
         .x(function (d) {
             return xScale(d.brutto);
         })
