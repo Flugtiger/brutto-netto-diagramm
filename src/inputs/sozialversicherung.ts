@@ -14,7 +14,7 @@ export function beitragspflichtigeEinnahme(bruttoJahr: number) {
 
 export function beitragspflichtigeEinnahmeArbeitnehmer(bruttoJahr: number) {
     // Werte für 2025
-    const g = 556; // geringfügigkeitsgrenze
+    const g = Geringfügigkeitsgrenze; // geringfügigkeitsgrenze
 
     const bruttoMonat = bruttoJahr / 12;
 

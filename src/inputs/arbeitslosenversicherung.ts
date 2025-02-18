@@ -1,6 +1,6 @@
+import { type DiagramInput } from "../components/types";
 import { Beitragsbemessungsgrenze } from "./rente";
 import { beitragspflichtigeEinnahmeArbeitnehmer } from "./sozialversicherung";
-import { type DiagramInput } from "./types";
 
 export const Arbeitslosenversicherung: DiagramInput = {
     legende: "Arbeitslosenversicherung",

@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 import * as d3 from "d3";
-import { computed, onMounted, ref, useTemplateRef, type StyleValue } from "vue";
+import { computed, onMounted, ref, useTemplateRef, watch, type StyleValue } from "vue";
 import { type DiagramInput, type Settings } from "./types";
 
 const props = defineProps<{
@@ -65,10 +65,20 @@ const xScale = d3
     .scaleLinear()
     .domain([0, domainEnd])
     .range([0, width - paddingLeft]);
+
 const yScale = d3
     .scaleLinear()
     .domain([0, domainEnd])
     .range([height - paddingBottom, 0]);
+
+const line = d3
+    .line<DataPoint>()
+    .x(function (d) {
+        return xScale(d.brutto);
+    })
+    .y(function (d) {
+        return yScale(d.netto);
+    });
 
 interface DataPoint {
     brutto: number;
@@ -94,9 +104,12 @@ function calculateNetto(brutto: number) {
     return netto;
 }
 
+const svgG = ref<d3.Selection<SVGGElement, unknown, HTMLElement, any>>();
+
 onMounted(() => {
     const svg = d3.select("svg").attr("width", width).attr("height", height);
     const g = svg.append("g").attr("transform", "translate(" + paddingLeft + ",0)");
+    svgG.value = g;
 
     g.append("g")
         .attr("transform", "translate(0," + (height - paddingBottom) + ")")
@@ -118,34 +131,6 @@ onMounted(() => {
         .attr("text-anchor", "end")
         .text("Netto " + (monthly ? "Monat" : "Jahr") + " (€)");
 
-    const data: DataPoint[] = [];
-    for (let x = 0; x <= width; x += 1) {
-        const brutto = xScale.invert(x);
-        const netto = calculateNetto(brutto);
-        console.log(brutto + ": " + netto);
-        data.push({
-            brutto,
-            netto,
-        });
-    }
-
-    const line = d3
-        .line<DataPoint>()
-        //.curve(d3.curveNatural)
-        .x(function (d) {
-            return xScale(d.brutto);
-        })
-        .y(function (d) {
-            return yScale(d.netto);
-        });
-
-    g.append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5)
-        .attr("d", line);
-
     g.append("path")
         .datum([
             { brutto: 0, netto: 0 },
@@ -155,7 +140,37 @@ onMounted(() => {
         .attr("stroke", "grey")
         .attr("stroke-width", 1.5)
         .attr("d", line);
+
+    update();
 });
+
+function update() {
+    const data: DataPoint[] = [];
+    for (let x = 0; x <= width; x += 1) {
+        const brutto = xScale.invert(x);
+        const netto = calculateNetto(brutto);
+        // console.log(brutto + ": " + netto);
+        data.push({
+            brutto,
+            netto,
+        });
+    }
+
+    const u = svgG.value!.selectAll(".netto-line").data([data]);
+
+    u.enter()
+        .append("path")
+        .attr("class", "netto-line")
+        .merge(u as any)
+        .transition()
+        .duration(2000)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
+}
+
+watch(props.settings, update);
 
 const styleObject = computed<StyleValue>(() => ({
     position: "absolute",

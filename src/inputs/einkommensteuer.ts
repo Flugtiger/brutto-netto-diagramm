@@ -1,6 +1,6 @@
+import { type DiagramInput, type Settings } from "../components/types";
 import * as kv from "./krankenversicherung";
 import * as rente from "./rente";
-import { type DiagramInput, type Settings } from "./types";
 
 export const Einkommensteuer: DiagramInput = {
     legende: "Einkommensteuer",

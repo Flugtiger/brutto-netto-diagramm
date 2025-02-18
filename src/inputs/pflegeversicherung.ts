@@ -1,6 +1,6 @@
+import { type DiagramInput, type Settings } from "../components/types";
 import { Beitragsbemessungsgrenze } from "./krankenversicherung";
 import { beitragspflichtigeEinnahmeArbeitnehmer } from "./sozialversicherung";
-import { type DiagramInput, type Settings } from "./types";
 
 export const Pflegeversicherung: DiagramInput = {
     legende: "Pflegeversicherung",

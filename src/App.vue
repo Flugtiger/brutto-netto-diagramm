@@ -1,6 +1,7 @@
 <template>
     <h1>Brutto-Netto Diagramm</h1>
-    <Diagram :inputs="inputs" :settings="{ kvErmäßigt: false }" />
+    <Diagram :inputs="inputs" :settings="settings" />
+    <Parameter v-if="mode != 'production'" v-model="settings" />
     <div class="content">
         <p>
             Dieses Diagramm zeigt den Nettolohn in Abhängigkeit vom Bruttolohn. Dabei werden aktuell Bürgergeld,
@@ -20,16 +21,30 @@
 </template>
 
 <script setup lang="ts">
-import { Arbeitslosenversicherung } from "./components/arbeitslosenversicherung";
+import { ref } from "vue";
 import Diagram from "./components/BruttoNettoDiagram.vue";
-import { Bürgergeld } from "./components/bürgergeld";
-import { Einkommensteuer } from "./components/einkommensteuer";
-import { Krankenversicherung } from "./components/krankenversicherung";
-import { Pflegeversicherung } from "./components/pflegeversicherung";
-import { Rente } from "./components/rente";
+import Parameter from "./components/Parameter.vue";
+import type { Settings } from "./components/types";
 import GithubMark from "./github-mark.svg";
+import { Arbeitslosenversicherung } from "./inputs/arbeitslosenversicherung";
+import { Bürgergeld } from "./inputs/bürgergeld";
+import { Einkommensteuer } from "./inputs/einkommensteuer";
+import { Krankenversicherung } from "./inputs/krankenversicherung";
+import { Pflegeversicherung } from "./inputs/pflegeversicherung";
+import { Rente } from "./inputs/rente";
+import { Wohnkosten } from "./inputs/wohnkosten";
 
-const inputs = [Bürgergeld, Einkommensteuer, Rente, Krankenversicherung, Arbeitslosenversicherung, Pflegeversicherung];
+const mode = import.meta.env.MODE;
+const settings = ref<Settings>({ kvErmäßigt: false });
+const inputs = [
+    Bürgergeld,
+    Einkommensteuer,
+    Rente,
+    Krankenversicherung,
+    Arbeitslosenversicherung,
+    Pflegeversicherung,
+    Wohnkosten,
+];
 </script>
 
 <style scoped>

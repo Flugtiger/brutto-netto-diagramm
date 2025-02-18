@@ -1,6 +1,6 @@
+import { type DiagramInput, type Settings } from "../components/types";
 import { Geringfügigkeitsgrenze } from "./grundlage";
 import { beitragspflichtigeEinnahmeArbeitnehmer } from "./sozialversicherung";
-import { type DiagramInput, type Settings } from "./types";
 
 // Werte für 2025:
 export const Beitragsbemessungsgrenze = 8050 * 12; // SVReGV 2025

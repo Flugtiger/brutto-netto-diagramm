@@ -1,6 +1,6 @@
+import { type DiagramInput } from "../components/types";
 import { Einkommensteuer } from "./einkommensteuer";
 import { Rente } from "./rente";
-import { type DiagramInput } from "./types";
 
 function inRange(value: number, rangeStart: number, rangeEnd: number) {
     return Math.min(Math.max(value - rangeStart, 0), rangeEnd - rangeStart);
@@ -21,7 +21,14 @@ export const Bürgergeld: DiagramInput = {
         absetzbetrag += Einkommensteuer.fn(brutto, settings) / 12;
         absetzbetrag += Rente.fn(brutto, settings) / 12;
 
-        const bürgergeldMonatlich = regelbedarf_stufe1 - (monatlichBrutto - absetzbetrag);
+        let wohnbedarf = 0;
+        if (settings.wohnkosten) {
+            // §22 SGB II
+            // Potsdam: 550€ Bruttokalt, Heizkosten für ca. 12.000 kWh/a
+            wohnbedarf = Math.min(settings.wohnkosten.kaltmiete, 550) + Math.min(settings.wohnkosten.heizkosten, 100);
+        }
+
+        const bürgergeldMonatlich = regelbedarf_stufe1 + wohnbedarf - (monatlichBrutto - absetzbetrag);
         return Math.max(bürgergeldMonatlich * 12, 0);
     },
 };

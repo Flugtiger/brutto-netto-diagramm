@@ -1,5 +1,9 @@
 export interface Settings {
     kvErmäßigt: boolean;
+    wohnkosten?: {
+        kaltmiete: number;
+        heizkosten: number;
+    };
 }
 
 export interface DiagramInput {
