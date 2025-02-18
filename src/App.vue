@@ -7,8 +7,8 @@
             Sozialabgaben (KV, PV, AV, Rente) sowie die Lohnsteuer berücksichtigt.
         </p>
         <p>
-            Die Berechnung basiert aktuell fest auf folgenden Parametern: Einzelperson, ledig, keine Kinder, nicht in
-            Sachsen ansässig, Zusatzbeitrag Krankenversicherung: 2,5%.
+            Die Berechnung basiert auf dem Rechtsstand 2025 und rechnet aktuell fest mit folgenden Parametern:
+            Einzelperson, ledig, keine Kinder, nicht in Sachsen ansässig, Zusatzbeitrag Krankenversicherung: 2,5%.
         </p>
     </div>
     <div class="footer">

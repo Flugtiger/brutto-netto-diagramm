@@ -168,8 +168,8 @@ function onMousemove(e: MouseEvent) {
     tooltipLeft.value = e.clientX - containerRef.value!.getBoundingClientRect().left + 20;
     const svgLeft = svgRef.value?.getBoundingClientRect().left || 0;
     const svgTop = svgRef.value?.getBoundingClientRect().top || 0;
-    const x = e.clientX - svgLeft - 50;
-    const y = e.clientY - svgTop - 50;
+    const x = e.clientX - svgLeft - paddingLeft;
+    const y = e.clientY - svgTop;
     if (x > 0 && x < width && y > 0 && y < height) {
         tooltipVisible.value = true;
         currentX.value = xScale.invert(x);
