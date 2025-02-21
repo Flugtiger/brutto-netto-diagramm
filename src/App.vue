@@ -27,7 +27,7 @@ import Parameter from "./components/Parameter.vue";
 import type { Settings } from "./components/types";
 import GithubMark from "./github-mark.svg";
 import { Arbeitslosenversicherung } from "./inputs/arbeitslosenversicherung";
-import { Bürgergeld } from "./inputs/bürgergeld";
+import { BürgergeldOhneWohngeld, WohngeldOhneBürgergeld } from "./inputs/bürgergeldOderWohngeld";
 import { Einkommensteuer } from "./inputs/einkommensteuer";
 import { Krankenversicherung } from "./inputs/krankenversicherung";
 import { Pflegeversicherung } from "./inputs/pflegeversicherung";
@@ -37,13 +37,14 @@ import { Wohnkosten } from "./inputs/wohnkosten";
 const mode = import.meta.env.MODE;
 const settings = ref<Settings>({ kvErmäßigt: false });
 const inputs = [
-    Bürgergeld,
+    BürgergeldOhneWohngeld,
     Einkommensteuer,
     Rente,
     Krankenversicherung,
     Arbeitslosenversicherung,
     Pflegeversicherung,
     Wohnkosten,
+    WohngeldOhneBürgergeld,
 ];
 </script>
 

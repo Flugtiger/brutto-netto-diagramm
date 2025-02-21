@@ -2,12 +2,14 @@ import { type DiagramInput, type Settings } from "../components/types";
 import * as kv from "./krankenversicherung";
 import * as rente from "./rente";
 
+export const WerbungskostenPausch = 1230;
+
 export const Einkommensteuer: DiagramInput = {
     legende: "Einkommensteuer",
     subtract: true,
     fn(bruttoJahr: number, _settings: Settings): number {
         // Werte von 2025 (§32a EstG):
-        const werbungskostenPausch = 1230;
+
         const sonderausgabenPausch = 36;
         const grundfreibetrag = 12096;
         const eckpunkt1 = 17443;
@@ -27,7 +29,7 @@ export const Einkommensteuer: DiagramInput = {
         const vorsorgepausch = Math.max(VSPN, VSP1 + VSP3);
 
         const versteuerndes_einkommen = Math.max(
-            bruttoJahr - werbungskostenPausch - vorsorgepausch - sonderausgabenPausch,
+            bruttoJahr - WerbungskostenPausch - vorsorgepausch - sonderausgabenPausch,
             0,
         );
 

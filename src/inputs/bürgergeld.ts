@@ -1,5 +1,8 @@
 import { type DiagramInput } from "../components/types";
+import { Arbeitslosenversicherung } from "./arbeitslosenversicherung";
 import { Einkommensteuer } from "./einkommensteuer";
+import { Krankenversicherung } from "./krankenversicherung";
+import { Pflegeversicherung } from "./pflegeversicherung";
 import { Rente } from "./rente";
 
 function inRange(value: number, rangeStart: number, rangeEnd: number) {
@@ -20,6 +23,9 @@ export const Bürgergeld: DiagramInput = {
         absetzbetrag += inRange(monatlichBrutto, 1000, 1200) * 0.1;
         absetzbetrag += Einkommensteuer.fn(brutto, settings) / 12;
         absetzbetrag += Rente.fn(brutto, settings) / 12;
+        absetzbetrag += Krankenversicherung.fn(brutto, settings) / 12;
+        absetzbetrag += Pflegeversicherung.fn(brutto, settings) / 12;
+        absetzbetrag += Arbeitslosenversicherung.fn(brutto, settings) / 12;
 
         let wohnbedarf = 0;
         if (settings.wohnkosten) {
